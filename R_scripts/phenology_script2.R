@@ -1,11 +1,11 @@
 #######################################################################*
 # ---- MIGRATORY BIRD COURSE: PHENOLOGY LAB ---- 
 #######################################################################*
-# Title: Phenology of the Indigo bunting, 1990-2009
+# Title: Phenology of the Red-eyed vireo, 1990-2009
 # Author: Brian Evans, modified from Hurlbert and Liang 2012
 # Date created: 20 Aug 2014
 # Overview: This script takes students through the steps associated with
-# a phenological analysis of Indigo bunting, a neotropical migrant that 
+# a phenological analysis of Red-eyed vireo, a neotropical migrant that 
 # can be found in fields and forest edges throughout Eastern North 
 # America. Students will:
 #   1) Visually explore observations by spatial location and date
@@ -48,17 +48,17 @@ setwd('/Users/bsevans/Desktop/MigratoryBirds/data')
 
   head(obs)
 
-# Extract observations of Indigo bunting:
+# Extract observations of Red-eyed vireo:
 
-  #inbu = obs[obs$Scientific.Name == 'Passerina cyanea',]
+  #revi = obs[obs$Scientific.Name == 'Passerina cyanea',]
 
-  inbu = obs[obs$Scientific.Name == 'Vireo olivaceus',]
+  revi = obs[obs$Scientific.Name == 'Vireo olivaceus',]
 
-# Explore the Indigo bunting data:
+# Explore the Red-eyed vireo data:
 
-  summary(inbu)
+  summary(revi)
 
-  hist(inbu$JulianDay, col = 'gray',
+  hist(revi$JulianDay, col = 'gray',
        xlab = 'Julian day', ylab = 'Number of observations',
        main = 'Histogram of observations by Julian day')
 
@@ -66,16 +66,16 @@ setwd('/Users/bsevans/Desktop/MigratoryBirds/data')
 # column and subsetting the data to unique records. We can double-check that the
 # data were subset using the "dim" function and looking at the row count:
 
-  dim(inbu)
+  dim(revi)
 
-  inbu = inbu[,-1]
+  revi = revi[,-1]
 
-  inbu = unique(inbu)
+  revi = unique(revi)
 
-  dim(inbu)
+  dim(revi)
 
-# The inbu dataframe is now the number of spatially-distinct eBird checklists
-# that included inbu observations for a given date.
+# The revi dataframe is now the number of spatially-distinct eBird checklists
+# that included revi observations for a given date.
 
 # Let's now determine the number of spatially-distinct eBird checklists for 
 # a given date. We will do this similarly to above, are now only interested
@@ -92,23 +92,23 @@ setwd('/Users/bsevans/Desktop/MigratoryBirds/data')
   dim(lists)
 
 #======================================================================*
-# ---- Proportion of inbu checklists ----
+# ---- Proportion of revi checklists ----
 #======================================================================*
-# Goal: Calculate the proportion of eBird checklists that contain inbu
+# Goal: Calculate the proportion of eBird checklists that contain revi
 # observations within a 2-degree resolution raster grid cell for an
 # example date (we'll use the median Julian day).
 
 #----------------------------------------------------------------------*
-# Count the number of inbu observations per grid cell
+# Count the number of revi observations per grid cell
 #----------------------------------------------------------------------*
 
 # Subset the data frame:
 
-  inbu05 = inbu[inbu$Year == 2005 & inbu$JulianDay == 150,]
+  revi05 = revi[revi$Year == 2005 & revi$JulianDay == 150,]
 
 # Create a data frame of points and observations:
 
-  pts.df = data.frame(inbu05$Longitude, inbu05$Latitude)
+  pts.df = data.frame(revi05$Longitude, revi05$Latitude)
 
 # Convert points to spatial:
 
@@ -116,8 +116,8 @@ setwd('/Users/bsevans/Desktop/MigratoryBirds/data')
 
 # Make an empty raster from an extent object:
   
-  e = extent(min(inbu$Longitude), max(inbu$Longitude),
-             min(inbu$Latitude), max(inbu$Latitude))
+  e = extent(min(revi$Longitude), max(revi$Longitude),
+             min(revi$Latitude), max(revi$Latitude))
   
   r = raster(e, resolution = 2)
 
@@ -156,18 +156,18 @@ setwd('/Users/bsevans/Desktop/MigratoryBirds/data')
 # name "lists.ras" to this raster.
 
 #----------------------------------------------------------------------*
-# ---- Calculate the proportion of inbu lists ----
+# ---- Calculate the proportion of revi lists ----
 #----------------------------------------------------------------------*
 
 # Create new raster map of proportional counts:
 
-  inbu.prop = observations.ras/lists.ras
+  revi.prop = observations.ras/lists.ras
 
 # Reset the color scale and plot
 
   col.scale = rev(terrain.colors(99))
 
-  plot(inbu.prop, col = col.scale, zlim = c(0,1))
+  plot(revi.prop, col = col.scale, zlim = c(0,1))
 
   map('state', add = T)
 
@@ -231,7 +231,7 @@ setwd('/Users/bsevans/Desktop/MigratoryBirds/data')
 # Now, let's use our new function in a for loop to calculate the 
 # proportion throughout
 
-# Calculate the proportion of lists that contain Indigo buntings for 
+# Calculate the proportion of lists that contain Red-eyed vireos for 
 # Front Royal VA:
   
   prop.of.lists = numeric()
@@ -275,13 +275,13 @@ setwd('/Users/bsevans/Desktop/MigratoryBirds/data')
 
 # Let's look again at the years in the study:
 
-  head(inbu)
+  head(revi)
   
-  sort(unique(inbu$Year))
+  sort(unique(revi$Year))
 
 # Create a vector of years:
 
-  years = sort(unique(inbu$Year))
+  years = sort(unique(revi$Year))
 
 # Create an empty vector of inflection points:
 
@@ -329,7 +329,7 @@ setwd('/Users/bsevans/Desktop/MigratoryBirds/data')
 
   summary(mod)
 
-# Question: What is the decadal change in Indigo bunting arrival date
+# Question: What is the decadal change in Red-eyed vireo arrival date
 # for Front Royal, Virginia?
 
 # Challenge: If we defined arrival date as the date of first arrival, what

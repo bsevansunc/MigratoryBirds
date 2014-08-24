@@ -26,18 +26,18 @@ prop.by.DayYear = function(day, year){
       lists.ras = r
       values(lists.ras) <- 0
     }
-  # inbu subset and observations per location
-    inbu = inbu[inbu$Year == year & inbu$JulianDay == day,]
-    if (dim(inbu)[1] != 0) {
-    inbu.df = data.frame(inbu$Longitude, inbu$Latitude)
-    inbu.sp =  SpatialPoints(inbu.df, proj4string = CRS('+proj=longlat +datum=WGS84'))
-    inbu.ras = rasterize(inbu.sp,r, fun = 'count', background = 0)
+  # revi subset and observations per location
+    revi = revi[revi$Year == year & revi$JulianDay == day,]
+    if (dim(revi)[1] != 0) {
+    revi.df = data.frame(revi$Longitude, revi$Latitude)
+    revi.sp =  SpatialPoints(revi.df, proj4string = CRS('+proj=longlat +datum=WGS84'))
+    revi.ras = rasterize(revi.sp,r, fun = 'count', background = 0)
     } else {
-      inbu.ras = r
-      values(inbu.ras) <- 0
+      revi.ras = r
+      values(revi.ras) <- 0
     }
-  # Return a raster of the proportion of lists that contain inbu:
-    inbu.ras/lists.ras
+  # Return a raster of the proportion of lists that contain revi:
+    revi.ras/lists.ras
   }
 
 # Likelihood ratio function:
