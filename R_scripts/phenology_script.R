@@ -1,11 +1,11 @@
 #######################################################################*
 # ---- MIGRATORY BIRD COURSE: PHENOLOGY LAB ---- 
 #######################################################################*
-# Title: Phenology of the Indigo bunting, 1990-2009
+# Title: Phenology of the Red-eyed vireo, 1990-2009
 # Author: Brian Evans, modified from Hurlbert and Liang 2012
 # Date created: 20 Aug 2014
 # Overview: This script takes students through the steps associated with
-# a phenological analysis of Indigo bunting, a neotropical migrant that 
+# a phenological analysis of Red-eyed vireo, a neotropical migrant that 
 # can be found in fields and forest edges throughout Eastern North 
 # America. Students will:
 #   1) Visually explore observations by spatial location and date
@@ -24,92 +24,91 @@ install.packages('raster', 'maps', 'inflection')
 library(raster)
 library(maps)
 library(inflection)
+library(ggplot2)
 
 # Load source functions:
 
-source('/Users/bsevans/Desktop/Migratory_Bird_Course/Phenology_lecture/MigrationSourceFunctions.R')
+source('/Users/bsevans/Desktop/MigratoryBirds/R_scripts/MigrationSourceFunctions.R')
 
 # Set working directory:
 
-setwd("/Users/bsevans/Desktop/hurlbert_liang/data")
+setwd('/Users/bsevans/Desktop/MigratoryBirds/data')
 
 # Gather observations and sampling effort data:
 
   obs = read.csv('observations.csv')
+
   samp = read.csv('sampling.csv')
 
 # We are only interested in a few of the columns, so let's get rid of some data:
 
   names(obs)
 
-  obs = obs[,c(2,4,7:9,12)]
+  obs = obs[,c(3:6,9)]
 
   head(obs)
 
-# Let's change the name of the sample event identifier column to simply sampleID
+# Extract observations of Red-eyed vireo:
 
-  names(obs)[1] = 'SampleID'
+  #revi = obs[obs$Scientific.Name == 'Passerina cyanea',]
 
-  test = unique(obs$Scientific.Name)
+  revi = obs[obs$Scientific.Name == 'Vireo olivaceus',]
 
-  list.files()
+# Explore the Red-eyed vireo data:
 
-# Extract observations of Indigo bunting:
+  summary(revi)
 
-  inbu = obs[obs$Scientific.Name == 'Passerina cyanea',]
-
-# Explore the Indigo bunting data:
-
-summary(inbu)
-
-hist(inbu$JulianDay, col = 'gray',
-     xlab = 'Julian day', ylab = 'Number of observations',
-     main = 'Histogram of observations by Julian day')
+  hist(revi$JulianDay, col = 'gray',
+       xlab = 'Julian day', ylab = 'Number of observations',
+       main = 'Histogram of observations by Julian day')
 
 # We will now subset this to unique spatial locations by removing the sampleID
 # column and subsetting the data to unique records. We can double-check that the
 # data were subset using the "dim" function and looking at the row count:
 
-  dim(inbu)
+  dim(revi)
 
-  inbu = inbu[,-1]
+  revi = revi[,-1]
 
-  inbu = unique(inbu)
+  revi = unique(revi)
 
-  dim(inbu)
+  dim(revi)
 
-# The inbu dataframe is now the number of spatially-distinct eBird checklists
-# that included inbu observations for a given date.
+# The revi dataframe is now the number of spatially-distinct eBird checklists
+# that included revi observations for a given date.
 
 # Let's now determine the number of spatially-distinct eBird checklists for 
 # a given date. We will do this similarly to above, are now only interested
 # in the lat, lon, year, and Julian date columns.
 
   names(samp)
-  lists = samp[,c(4:6,9)]
+
+  lists = samp[,c(2:4,7)]
+
   lists = unique(lists)
 
   dim(samp)
+
   dim(lists)
 
 #======================================================================*
-# ---- Proportion of inbu checklists ----
+# ---- Proportion of revi checklists ----
 #======================================================================*
-# Goal: Calculate the proportion of eBird checklists that contain inbu
+# Goal: Calculate the proportion of eBird checklists that contain revi
 # observations within a 2-degree resolution raster grid cell for an
 # example date (we'll use the median Julian day).
 
 #----------------------------------------------------------------------*
-# Count the number of inbu observations per grid cell
+# Count the number of revi observations per grid cell
 #----------------------------------------------------------------------*
 
 # Subset the data frame:
 
-  inbu05 = inbu[inbu$Year == 2005 & inbu$JulianDay == 150,]
+  revi05 = revi[revi$Year == 2005 & revi$JulianDay == 150,]
 
 # Create a data frame of points and observations:
 
-  pts.df = data.frame(inbu05$Longitude, inbu05$Latitude)
+  pts.df = data.frame(revi05$Longitude, revi05$Latitude)
 
 # Convert points to spatial:
 
@@ -117,7 +116,8 @@ hist(inbu$JulianDay, col = 'gray',
 
 # Make an empty raster from an extent object:
   
-  e = extent(min(lon), max(lon), min(lat), max(lat))
+  e = extent(min(revi$Longitude), max(revi$Longitude),
+             min(revi$Latitude), max(revi$Latitude))
   
   r = raster(e, resolution = 2)
 
@@ -133,7 +133,7 @@ hist(inbu$JulianDay, col = 'gray',
 
   col.scale = rev(terrain.colors(4))
              
-# Take a look:
+# To explore this, let's make a raster plotting function
 
   plot(observations.ras, col = col.scale, zlim = c(0,20))
 
@@ -152,21 +152,22 @@ hist(inbu$JulianDay, col = 'gray',
 
 # Now you! Follow the steps above to calculate the number of spatially 
 # unique eBird checklists per grid cell on Julian day 150 of 2005 and 
-# plot the map.
+# plot the map. We will use this raster layer later. Please assign the 
+# name "lists.ras" to this raster.
 
 #----------------------------------------------------------------------*
-# ---- Calculate the proportion of inbu lists ----
+# ---- Calculate the proportion of revi lists ----
 #----------------------------------------------------------------------*
 
 # Create new raster map of proportional counts:
 
-  inbu.prop = observations.ras/lists.ras
+  revi.prop = observations.ras/lists.ras
 
 # Reset the color scale and plot
 
   col.scale = rev(terrain.colors(99))
 
-  plot(inbu.prop, col = col.scale, zlim = c(0,1))
+  plot(revi.prop, col = col.scale, zlim = c(0,1))
 
   map('state', add = T)
 
@@ -198,32 +199,20 @@ hist(inbu$JulianDay, col = 'gray',
     map('state', add = T)
   }
 
-
 #======================================================================*
-# ---- Proportion of observations across years and pixels ----
+# ---- Proportion of observations across days at a given location ----
 #======================================================================*
 
-# We'll now run the for loop again, but this time to extract a data frame
-# from each raster.
+# We'll first write a little function that will calculate and extract 
+# the number of observations on a given site and day for one grid cell:
 
-# Create an empty list:
-
-  l1 = list()
-
-# Run a for loop to extract the proportional observation for each site and 
-# day:
-
-  for (i in 1:length(jdays)){
-    # Extract values as vectors in the list:
-    l1[[i]] = as.data.frame(prop.by.DayYear(jdays[i], 2005))[,1]
+  prop.CellDayYear = function(cell, day, year){
+    r = prop.by.DayYear(day, year)
+    extract(r, cell)
   }
 
-# We now have a list where each list item is a vector of proportional
-# observations for a given map pixel. Our goal, however, is to write a 
-# code that determines how proportional observations change over time
-# at a given site.
-# 
-
+# Our goal, however, is to write some code that determines how 
+# proportional observations change over time at a given site.
 # Let's use the map pixel that includes Front Royal, Virginia.
 
 # First, we have to find the cell assignment. To do so, we will plot
@@ -232,20 +221,22 @@ hist(inbu$JulianDay, col = 'gray',
 
 # Add the map: 
 
-  r = inbu.prop
-  plot(r)
+  plot(observations.ras)
   map('state', add = T)
 
 # Determine the cell reference:
 
-  #click(r, cell = T)
+  click(observations.ras, cell = T)
 
-# Calculate the proportion of lists that contain Indigo buntings for 
+# Now, let's use our new function in a for loop to calculate the 
+# proportion throughout
+
+# Calculate the proportion of lists that contain Red-eyed vireos for 
 # Front Royal VA:
   
   prop.of.lists = numeric()
-  for (i in 1:length(l1)){
-    prop.of.lists[i] = l1[[i]][105]
+  for (i in 1:length(jdays)){
+    prop.of.lists[i] = prop.CellDayYear(93,jdays[i],2005)
   }
 
 # Add a column of date values:
@@ -254,7 +245,7 @@ hist(inbu$JulianDay, col = 'gray',
 
 # Remove the NA's:
 
-  prop.of.lists.df = prop.of.lists.df[!is.na(prop.of.lists.df[,2]),]
+  prop.of.lists.df = na.omit(prop.of.lists.df)
 
 # Plot the proportional count by Julian date:
 
@@ -284,13 +275,13 @@ hist(inbu$JulianDay, col = 'gray',
 
 # Let's look again at the years in the study:
 
-  head(inbu)
+  head(revi)
   
-  sort(unique(inbu$Year))
+  sort(unique(revi$Year))
 
 # Create a vector of years:
 
-  years = sort(unique(inbu$Year))
+  years = sort(unique(revi$Year))
 
 # Create an empty vector of inflection points:
 
@@ -300,21 +291,27 @@ hist(inbu$JulianDay, col = 'gray',
 # will take a bit of time to run:
 
   for (i in 1:length(years)){
-    i.points[i] = inflection.year(years[i])
+    i.points[i] = inflection.year(years[i], 93)
   }
 
   i.points
 
 # Make into a data frame, then remove NA values (unable to estimate):
 
-df = data.frame(years, i.points)
-df = df[!is.na(df$i.points),]
+  df = data.frame(years, i.points)
+
+  df = df[!is.na(df$i.points),]
 
 # Plot the data and look to see if there is a trend (exploration only):
 
   plot(i.points~years, data = df, 
        pch = 19,cex.lab = 1.3,
        xlab = 'Year', ylab = 'Inflection point')
+
+  ggplot(df, aes(x=year,y=i.points))
+    +geom_point(shape=19, color="black")
+    +geom_line(linetype="dashed",color="black")+geom_smooth(method="lm", se=FALSE)
+    +scale_x_continuous("Year")+scale_y_continuous("Inflection Point, Date")
 
 # Add lines:
 
@@ -332,7 +329,7 @@ df = df[!is.na(df$i.points),]
 
   summary(mod)
 
-# Question: What is the decadal change in Indigo bunting arrival date
+# Question: What is the decadal change in Red-eyed vireo arrival date
 # for Front Royal, Virginia?
 
 # Challenge: If we defined arrival date as the date of first arrival, what
