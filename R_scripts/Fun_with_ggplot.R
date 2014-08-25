@@ -11,10 +11,8 @@
 #====================================================================*
 
 #Install packages and load libraries
-install.packages('ggplot2')
-install.packages('plyr')
-update.packages('ggplot2')
-update.packages('plyr')
+install.packages('ggplot2','plyr')
+
 library(ggplot2)
 library(plyr)
 
