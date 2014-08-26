@@ -14,8 +14,7 @@
 
 # Install packages and read libraries:
 
-  install.packages('adehabitatHR')
-  install.packages('maptools')
+  install.packages('adehabitatHR','maptools')
 
   library('adehabitatHR')
   library('maptools')
