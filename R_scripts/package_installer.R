@@ -1,0 +1,1 @@
+install.packages(c('dismo','ggplot2','plyr','adehabitatHR','maptools','unmarked','RMark', 'raster','maps','inflection'))
