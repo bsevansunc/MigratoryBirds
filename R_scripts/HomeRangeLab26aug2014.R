@@ -7,6 +7,7 @@
 # Overview: In this lab you will learn to calculate animal home ranges
 #  (both minimum convex polygon and kernel density estimator) using the 
 #  adihabitatHR package in R. 
+#  You will also learn to calculate home ranges in 3D
 
 #======================================================================*
 # ---- Set-up ----
@@ -26,23 +27,20 @@ setwd("/Users/LLPmac/Documents/AMRE_YEWA/MigratoryBirdsCourse/HRlab/")
   #data are in UTM format; units are meters
   #the "na.strings" part replaces missing values with "NA"
 
-  ###import = read.csv("/Users/LLPmac/Documents/AMRE_YEWA/MigratoryBirdsCourse/HRlab/RSHomeRangeData.csv", 
+import = read.csv("/Users/LLPmac/Documents/AMRE_YEWA/MigratoryBirdsCourse/MigratoryBirds/data/RSHomeRangeData.csv", 
                   header = T, na.strings=c("NA", "NULL", "", "."))
-  ####locs<-import
+ locs<-import
 
 #taking a quick look at the data for each bird
   table(locs$bird)
 
-##**
-#THIS IS WHERE I WOULD INSTEAD IMPORT, E.G. ALEX FORMICARIUS DATA
-#THEN RUN THE TRIANGULATION SCRIPT
 
-#IT WOULD EXPORT HOME RANGES.
 #======================================================================*
 # ---- Prepare for triangulations ----
 #======================================================================*
 import1 = read.csv("/Users/LLPmac/Documents/AMRE_YEWA/MigratoryBirdsCourse/HRlab/RawBrazilTelemData26aug2014.csv", 
   header = T, na.strings=c("NA", "NULL", "", "."))
+
 telem<-import1
 
 #raw vs. adjusted azmuth (compass bearing)
@@ -93,8 +91,12 @@ telem<-import1
   writePolyShape(cp,"mcp")
 
 #======================================================================*
-# ---- Kernel Density Estimation ----
+# ---- Kernel Density Estimation in 2D----
 #======================================================================*
+
+#This section teaches you how to calculate home range size using the kernel density estimator
+ #It uses a utilization distribution (ud) to calculate home range size based on the distribution of the points
+ #can calculate home range size and 
 
 #running the kernel density estimation (kde) using LSCV (least square cross validataion)
   #h is the smoothing parameter
@@ -143,3 +145,20 @@ telem<-import1
 
 #export the shapefiles for the href version of the home ranges
   writePolyShape(core,"50kde")
+
+#======================================================================*
+# ---- 3D Kernel Density Estimation ----
+#======================================================================*
+#this code originally written by Nathan Cooper (Smithsonian Migratory Bird Center)
+  #subsequently modified for this course 
+
+
+
+#======================================================================*
+# ---- Excercises ----
+#======================================================================*
+#1) Determine the amount of overlap (in 2D) between animal 1 and animal 2.
+
+#2) For the 2D home ranges, change the colors of the animal home ranges to blue, black, and orange
+
+#3)
