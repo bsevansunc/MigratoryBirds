@@ -21,7 +21,8 @@
   library('maptools')
 
 #set the working directory; 
-setwd("/Users/LLPmac/Documents/AMRE_YEWA/MigratoryBirdsCourse/HRlab/")
+setwd("/Users/LLPmac/Documents/AMRE_YEWA/MigratoryBirdsCourse/MigratoryBirds/")
+  #this isn't really necessary here because below we're calling the path to the folder when we import
 
 # import the bird location data
   #data are in UTM format; units are meters
@@ -31,17 +32,21 @@ import = read.csv("/Users/LLPmac/Documents/AMRE_YEWA/MigratoryBirdsCourse/Migrat
                   header = T, na.strings=c("NA", "NULL", "", "."))
  locs<-import
 
-#taking a quick look at the data for each bird
+#taking a quick look at the data for each of three birds
   table(locs$bird)
 
 
 #======================================================================*
 # ---- Prepare for triangulations ----
 #======================================================================*
-import1 = read.csv("/Users/LLPmac/Documents/AMRE_YEWA/MigratoryBirdsCourse/MigratoryBirds/RawBrazilTelemData26aug2014.csv", 
+import1 = read.csv("/Users/LLPmac/Documents/AMRE_YEWA/MigratoryBirdsCourse/MigratoryBirds/data/RawBrazilTelemData26aug2014.csv", 
   header = T, na.strings=c("NA", "NULL", "", "."))
 
 telem<-import1
+
+-----------------------*
+  #Some discussion of triangulating and home range theory
+-----------------------*
 
 #raw vs. adjusted azmuth (compass bearing)
  #can calculate declanation and adjust declination here: http://www.ngdc.noaa.gov/geomag-web/#declination
@@ -56,9 +61,20 @@ telem<-import1
   #animal behavior
   #
 
-#HERE DISCUSS THEORY AND APPLICATION OF TRIANGULATIONS
+#How to triangulate data
  #LOCATE III is a free program for PC to do triangulations, but it is buggy
  #LOAS is a PC-based program to do triangulations - not buggy, but $75
+
+#home range - how many points until home range stabilizes?
+ #2D: usually 30-50 *independent* points is usually enough (Seaman et al. 1999, JWM)
+ #3D: around 80 independent points is usually enough (Nathan Cooper et al. in press)
+  #discuss Biological (Lair 1987) vs. statistical independence
+ #can bootstrap to perform an asymptote analysis
+  #you can check your animals one-by-one (time consuming!) -see excercise below
+    #or you could just assume the # of points above
+    
+
+#
 #======================================================================*
 # ---- Prepare the data for adehabitatHR ----
 #======================================================================*
@@ -74,7 +90,7 @@ telem<-import1
   coordinates(locs1)<-xyt
   class(locs1)
 
-#plotting the data
+#plotting the point data
   plot(locs1, col=as.data.frame(locs1)[,1])
 
 #======================================================================*
@@ -137,11 +153,13 @@ telem<-import1
 #plotting the vector and the points
   plot(homerange1,border=1:3, lwd=6) 
   plot(locs1, col=as.data.frame(locs1)[,1], add=T)
+  #this looks much better, doesn't it?
+  #use your the ecology of the animal to decide which home range method to use
 
 #export the shapefiles for the href version of the home ranges
   writePolyShape(homerange1,"95kde")
 
-#converting the 50 KDE as vectors, the "core area
+#converting the 50 KDE as vectors, the "core area"
   core <- getverticeshr(kud1, percent = 50)
 
 #plotting the vector and the points
@@ -167,7 +185,7 @@ library("ks")
 library("MASS")
 library("KernSmooth")
 library("CircStats")
-library("odesolve")  #***not avail for this version of R??! #doesn't seem to matter?
+library("odesolve")  #***not avail for this version of R??! #doesn't seem to matter.
 library("coda")
 library("deldir")
 library("igraph")
@@ -175,30 +193,24 @@ library("RandomFields")
 
 #EXCERCISE: remove the column called "rec" from the locs dataset
   #this way the columns will just be X,Y,Z, and bird
-##***REMOVE THIS LINE
-locs$rec<-NULL
 
-#check the dataset
+
+#check the structure of the dataset to make sure that X, Y, & Z are in number format
 str(locs)
 
 #EXCERCISE: split the "locs" object into three different object: one per animal
- #hint: you can use subset()
-
-#***REMOVE THE RIGHT SIDE OF THIS & SAVE ELSEWHERE 
-a<-subset(locs, bird=="YWFA,Y_G")
-b<-subset(locs, bird=="RSFA_BK,O")
-c<-subset(locs, bird=="RSMBK,BK_A")
+ #hint: you can use subset(), or -[]
+a<-
+b<-
+c<-
 
 #EXCERCISE: remove the bird column from each of the three new objects, a, b & c
   #the dataset can only have X, Y, and Z
- #***REMOVE THESE LINES BELOW
-a$bird<-NULL
-b$bird<-NULL
-c$bird<-NULL
 
------------------------*
+
+------------------------------*
   #3D Kernel Data analyses----
------------------------*
+------------------------------*
 
 # calls the plug-in bandwidth estimator, there are several types of bandwidth estimators - this is generally accepted as the best
 # if your resulting territories are lots of separated pieces you can multiply Hpi(a) by factors larger than 1
@@ -237,17 +249,27 @@ Vol95b<-contourSizes(fhatb, cont=95)
 Vol95c<-contourSizes(fhatc, cont=95)
 
 #plotting the home ranges in 3D
-plot(fhata,cont=c(95),colors=("yellow"),drawpoints=TRUE,xlab="", ylab="", zlab="",xlim=c(minX,maxX),ylim=c(minY,maxY),zlim=c(minZ,maxZ),size=2, ptcol="black") 
-plot(fhatb,cont=c(95),colors=("red"),add=TRUE,drawpoints=TRUE,xlab="", ylab="", zlab="",size=2,ptcol="red")
-plot(fhatc,cont=c(95),colors=("blue"),add=TRUE,drawpoints=TRUE,xlab="", ylab="", zlab="",size=2,ptcol="blue")
+ #you may have to install the program X11 do to this
+plot(fhata,cont=c(95),colors=("green"),drawpoints=TRUE,xlab="", ylab="", zlab="",xlim=c(minX,maxX),ylim=c(minY,maxY),zlim=c(minZ,maxZ),size=2, ptcol="green") 
+plot(fhatb,cont=c(95),colors=("black"),add=TRUE,drawpoints=TRUE,xlab="", ylab="", zlab="",size=2,ptcol="black")
+plot(fhatc,cont=c(95),colors=("red"),add=TRUE,drawpoints=TRUE,xlab="", ylab="", zlab="",size=2,ptcol="red")
+
 
 #======================================================================*
 # ---- Excercises ----
 #======================================================================*
-#1) Determine the amount of overlap (in 2D) between animal 1 and animal 2.
 
-#2) For the 2D home ranges, change the colors of the animal home ranges to blue, black, and orange
+#1) #change the maximum on the 3D Z axis to 10 and replot
+    #this way the graphs will be easier to visualize
 
-#3) Does anyone know trigonometry? 
-    #If so, write a function to calculate the intersection of two animal signals
+#2) For the 2D home ranges, change the colors of the animal home ranges to blue, pink, and orange
+
+#3) Use adehabitat package to Determine the amount of overlap (in 2D) between the first and second birds in the locs dataset
+    #I haven't done this yet, so seek help online
+
+#4) Does anyone know trigonometry? 
+    #If so, write a function to calculate the intersection of two animal signals in the telem dataset
       #hint, solve the problem first, then write the function
+
+#5) Perform a 3D asymptote analysis for bird a (hard!)
+ #how many points until home range stabilizes?
