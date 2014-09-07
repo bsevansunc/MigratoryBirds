@@ -38,7 +38,7 @@ import = read.csv("/Users/LLPmac/Documents/AMRE_YEWA/MigratoryBirdsCourse/Migrat
 #======================================================================*
 # ---- Prepare for triangulations ----
 #======================================================================*
-import1 = read.csv("/Users/LLPmac/Documents/AMRE_YEWA/MigratoryBirdsCourse/HRlab/RawBrazilTelemData26aug2014.csv", 
+import1 = read.csv("/Users/LLPmac/Documents/AMRE_YEWA/MigratoryBirdsCourse/MigratoryBirds/RawBrazilTelemData26aug2014.csv", 
   header = T, na.strings=c("NA", "NULL", "", "."))
 
 telem<-import1
@@ -55,6 +55,10 @@ telem<-import1
   #size of transmitter
   #animal behavior
   #
+
+#HERE DISCUSS THEORY AND APPLICATION OF TRIANGULATIONS
+ #LOCATE III is a free program for PC to do triangulations, but it is buggy
+ #LOAS is a PC-based program to do triangulations - not buggy, but $75
 #======================================================================*
 # ---- Prepare the data for adehabitatHR ----
 #======================================================================*
@@ -152,7 +156,90 @@ telem<-import1
 #this code originally written by Nathan Cooper (Smithsonian Migratory Bird Center)
   #subsequently modified for this course 
 
+-----------------------*
+#3D Kernel Data prep----
+-----------------------*
+#installing required packages
+install.packages('ks','MASS', 'KernSmooth', 'CircStats','odesolve','coda','deldir','igraph','RandomFields')
 
+#Loading required packages 
+library("ks")
+library("MASS")
+library("KernSmooth")
+library("CircStats")
+library("odesolve")  #***not avail for this version of R??! #doesn't seem to matter?
+library("coda")
+library("deldir")
+library("igraph")
+library("RandomFields")
+
+#EXCERCISE: remove the column called "rec" from the locs dataset
+  #this way the columns will just be X,Y,Z, and bird
+##***REMOVE THIS LINE
+locs$rec<-NULL
+
+#check the dataset
+str(locs)
+
+#EXCERCISE: split the "locs" object into three different object: one per animal
+ #hint: you can use subset()
+
+#***REMOVE THE RIGHT SIDE OF THIS & SAVE ELSEWHERE 
+a<-subset(locs, bird=="YWFA,Y_G")
+b<-subset(locs, bird=="RSFA_BK,O")
+c<-subset(locs, bird=="RSMBK,BK_A")
+
+#EXCERCISE: remove the bird column from each of the three new objects, a, b & c
+  #the dataset can only have X, Y, and Z
+ #***REMOVE THESE LINES BELOW
+a$bird<-NULL
+b$bird<-NULL
+c$bird<-NULL
+
+-----------------------*
+  #3D Kernel Data analyses----
+-----------------------*
+
+# calls the plug-in bandwidth estimator, there are several types of bandwidth estimators - this is generally accepted as the best
+# if your resulting territories are lots of separated pieces you can multiply Hpi(a) by factors larger than 1
+Ha <- Hpi(a)
+Hb <- Hpi(b)
+Hc <- Hpi(c)
+
+#joins 2 datasets and then determines min/mix for each dimension. Important that overlapping territories are evaluated in the same 
+#physical space. Adds buffer points so that no part of the territories are cutoff.
+all<-rbind(a,b)
+
+minX<-min(all$X)-25
+minY<-min(all$Y)-25
+minZ<-0
+
+maxX<-max(all$X)+25
+maxY<-max(all$Y)+25
+maxZ<-max(all$Z)+5
+
+# runs the kernel density analysis, gridsize is the number of voxels (3D version of pixel) that the space is divided up to. 
+ #this will take a few seconds to run for each bird
+fhata <- kde(x=a, H=Ha, binned=FALSE, xmin=c(minX,minY,minZ), gridsize = 151, xmax=c(maxX,maxY,maxZ)) 
+fhatb <- kde(x=b, H=Hb, binned=FALSE, xmin=c(minX,minY,minZ), gridsize = 151, xmax=c(maxX,maxY,maxZ))
+fhatc <- kde(x=c, H=Hc, binned=FALSE, xmin=c(minX,minY,minZ), gridsize = 151, xmax=c(maxX,maxY,maxZ))
+
+#calculates isopleth at 95% - cta and ctb just produce a number. I think it is the the cutoff for each isopleth. So all 
+# voxels with a density greater than cta would be in that isopleth
+cta <- contourLevels(fhata, cont=95, approx=FALSE) 
+ctb <- contourLevels(fhatb, cont=95, approx=FALSE)
+ctc <- contourLevels(fhatc, cont=95, approx=FALSE)
+
+#calculates the volume of each territory at 95th isopleth
+ #if UTMs used, then units should be m^3
+Vol95a<-contourSizes(fhata, cont=95)
+Vol95b<-contourSizes(fhatb, cont=95)
+Vol95c<-contourSizes(fhatc, cont=95)
+
+#plotting the home ranges in 3D
+plot(fhata,cont=c(95),colors=("yellow"),drawpoints=TRUE,xlab="", ylab="", zlab="",xlim=c(minX,maxX),ylim=c(minY,maxY),zlim=c(minZ,maxZ),size=2, ptcol="black") 
+plot(fhatb,cont=c(95),colors=("red"),add=TRUE,drawpoints=TRUE,xlab="", ylab="", zlab="",size=2,ptcol="red")
+plot(fhatc,cont=c(95),colors=("blue"),add=TRUE,drawpoints=TRUE,xlab="", ylab="", zlab="",size=2,ptcol="blue")
 
 #======================================================================*
 # ---- Excercises ----
@@ -161,4 +248,6 @@ telem<-import1
 
 #2) For the 2D home ranges, change the colors of the animal home ranges to blue, black, and orange
 
-#3)
+#3) Does anyone know trigonometry? 
+    #If so, write a function to calculate the intersection of two animal signals
+      #hint, solve the problem first, then write the function
