@@ -267,7 +267,7 @@ set.seed(0)
 Vol95.1 = matrix(0, nrow=10, ncol=nrow(b)-4) #nrow is number of samples - <100 would be ideal but will take forever
 
 #nested for() loop to run the bootstrap
- #careful, because this for loop takes a long time - perhaps an hour depending on the machine.
+ #careful, because this for loop takes a long time - took 123 min on my machine.
 for (x in 60:nrow(b)) { #this step does the calculation from 60 till the length of the dataset
   #if you could run every few pts instead of every one it would be much faster
   #but haven't figured out how to do that yet.
@@ -280,6 +280,9 @@ for (x in 60:nrow(b)) { #this step does the calculation from 60 till the length 
 }
 # Stop the clock
 proc.time() - ptm
+
+#export data
+write.csv(Vol95.1,"/Users/LLPmac/Documents/AMRE_YEWA/MigratoryBirdsCourse/MigratoryBirds/data/asymptote.csv")
 
 #EXCERCISE:
 #plot the bootstrapped home ranges from the asymptote analysis
@@ -294,7 +297,7 @@ proc.time() - ptm
 
 #2) For the 2D home ranges, change the colors of the animal home ranges to blue, pink, and orange
 
-#3) Use adehabitat package to Determine the amount of overlap (in 2D) between the first and second birds in the locs dataset
+#3) Use adehabitat package to determine the amount of overlap (in 2D) between the first and second birds in the locs dataset
     #I haven't done this yet, so seek help online
 
 #4) Does anyone know trigonometry? 
