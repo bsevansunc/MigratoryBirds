@@ -254,6 +254,36 @@ plot(fhata,cont=c(95),colors=("green"),drawpoints=TRUE,xlab="", ylab="", zlab=""
 plot(fhatb,cont=c(95),colors=("black"),add=TRUE,drawpoints=TRUE,xlab="", ylab="", zlab="",size=2,ptcol="black")
 plot(fhatc,cont=c(95),colors=("red"),add=TRUE,drawpoints=TRUE,xlab="", ylab="", zlab="",size=2,ptcol="red")
 
+------------------------------*
+  #Asymptote analysis on bird b in 3d----
+------------------------------*
+#how many points is enough?
+  
+  # Start the clock!
+ptm <- proc.time()
+
+set.seed(0)
+#creates the dataset
+Vol95.1 = matrix(0, nrow=10, ncol=nrow(b)-4) #nrow is number of samples - <100 would be ideal but will take forever
+
+#nested for() loop to run the bootstrap
+ #careful, because this for loop takes a long time - perhaps an hour depending on the machine.
+for (x in 60:nrow(b)) { #this step does the calculation from 60 till the length of the dataset
+  #if you could run every few pts instead of every one it would be much faster
+  #but haven't figured out how to do that yet.
+  for (k in 1:nrow(Vol95.1)) {  
+    rows <- sample.int(nrow(b), x) 
+    Hb <- Hpi(b[rows,])
+    fhatb <- kde(x=b[rows,], H=Hb, gridsize=151, binned=FALSE)
+    Vol95.1[k,x-4] <- contourSizes(fhatb, cont=95)
+  }
+}
+# Stop the clock
+proc.time() - ptm
+
+#EXCERCISE:
+#plot the bootstrapped home ranges from the asymptote analysis
+ #Q: when does 3D home range stabilize for bird b?
 
 #======================================================================*
 # ---- Excercises ----
@@ -271,5 +301,5 @@ plot(fhatc,cont=c(95),colors=("red"),add=TRUE,drawpoints=TRUE,xlab="", ylab="", 
     #If so, write a function to calculate the intersection of two animal signals in the telem dataset
       #hint, solve the problem first, then write the function
 
-#5) Perform a 3D asymptote analysis for bird a (hard!)
- #how many points until home range stabilizes?
+#5) Perform a 2D asymptote analysis for bird b
+ #how many points until home range stabilizes in 2D?
