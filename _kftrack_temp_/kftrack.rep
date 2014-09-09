@@ -1,0 +1,52 @@
+State space Kalman filter track estimator
+kftrack version 1.2 (Microsoft Visual C++, v640)
+  (c) 2001 John Sibert
+  Pelagic Fisheries Research Program, University of Hawaii
+
+current_phase() = 1
+days_at_liberty = -4522327
+npoint = 13
+reporting_rate = -2.87463e-006
+npoint = 13
+Number_of_parameters = 3
+f = -1.53053e+009
+kalman_like = -1.53053e+009
+recap_point = 1
+recap_err = 0
+gc_recap_err = 0
+uu = 0
+vv = -1.42109e-014
+D = 100
+bx = 0.014
+by = -0.229
+vx = 1.72
+vy = 1.42
+a0 = 1e-008
+b0 = 0
+spd = 0.0001
+hdg = 90.0001
+vxy = 2.23043
+vy_dev_penalty_wt = 0
+norm2(vy_dev) = 0
+c =  0 0
+ 0 -5.87163e-008
+ 0 -6.82121e-013
+ 0 -6.82121e-013
+ 0 -6.82121e-013
+ -0 5.85941e-008
+ -0 6.43904e-008
+ 0 -0
+ 0 -0
+ 0 -2.2295e-009
+ 0 -8.94774e-009
+ -0 6.40421e-009
+ -0 4.77303e-009
+Q: 
+ -6.71744e+007 0
+ 0 -6.71744e+007
+d =  0.014 -0.229
+H: 
+ 0 0
+ 0 0
+
+Phase 1 tracks written to files mpt.dat and gmt.dat

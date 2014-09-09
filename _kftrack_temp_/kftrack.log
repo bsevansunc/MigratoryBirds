@@ -1,0 +1,47 @@
+size of file gradfil1.tmp = 0
+size of file gradfil2.tmp = 0
+size of file varssave.tmp = 0
+size of file cmpdiff.tmp = 0
+gic Fisheries Research Program, University of Hawaii
+
+line 57, file kftrack.cpp, npoint = 13
+line 59, file kftrack.cpp, release_point = 1
+line 61, file kftrack.cpp, recap_point = 1
+line 64, file kftrack.cpp, N = 2, m = 2
+line 99, file kftrack.cpp, solstice =    4/06/21
+line 141, file kftrack.cpp, u_active = 1, u_phase = 1
+line 142, file kftrack.cpp, v_active = 1, v_phase = 1
+line 143, file kftrack.cpp, D_active = 1, D_phase = 1
+line 144, file kftrack.cpp, bx_active = 0, bx_phase = -1
+line 145, file kftrack.cpp, by_active = 0, by_phase = -1
+line 146, file kftrack.cpp, vx_active = 0, vx_phase = -1
+line 147, file kftrack.cpp, vy_active = 0, vy_phase = -1
+line 148, file kftrack.cpp, cos_errors = 0, cos_phase = -1
+line 149, file kftrack.cpp, dev_errors = 0, dev_phase = -1
+line 150, file kftrack.cpp, vscale_active = 1, vscale_phase = -1
+line 288, file kftrack.cpp, init_D = 100, D = 100
+line 291, file kftrack.cpp, init_vx = 1.72, vx = 1.72
+line 294, file kftrack.cpp, init_vy = 1.42, vy = 1.42
+line 311, file kftrack.cpp, min(yLong) = -95.71, max(yLong) = 2012
+line 314, file kftrack.cpp, start_long = 958.145
+
+Input data:
+index        date sday      long       lat         x         y
+    1     4/25/005.0988e+006   1053.86    -89.48   573.861   -5368.8
+    2   116/00/209.23059e+006  -958.1452.23842e-317  -57488.71.34305e-315
+    3    26/00/-29.23064e+006  -954.145      2012   48549.7    120720
+    4     0/29/-939.23069e+006  -841.145         0  -50468.7         0
+    5     0/-2/009.23073e+006  -931.145         4  -55732.6       240
+    6    34/-93/20125.10754e+006  -958.145       118   26989.3      7080
+    7    -2/00/00576469  -958.145        29  -50280.7      1740
+    8   -94/2012/04576469  -930.815         0  -55848.9         0
+    9     0/00/120576469  -960.519         0  -57631.1         0
+   10  2012/04/30733356  -1053.86     32.86  -53114.2    1971.6
+   11     0/121/001.363e+006  -958.145    -2.374  -57439.4   -142.44
+   12     5/01/00912341   1053.86    -91.99  -2195.71   -5519.4
+   13   122/00/34576469  -958.145         0  -57488.7         0
+
+Finished LOCAL_CALCS in PARAMETER_SECTION.
+
+
+Phase 1 tracks written to files mpt.dat and gmt.dat
