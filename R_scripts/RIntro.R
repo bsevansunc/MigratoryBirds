@@ -1,16 +1,20 @@
 #######################################################################*
 # ---- MIGRATORY BIRDS WORKSHOP: INTRODUCTION TO R ----
 #######################################################################*
-# This document will lead you through the early steps of data exploration and, in 
-# the process, you will explore how R interprets a dataset. It is important that 
-# you follow every step, formatting and running your data exactly as the script 
-# describes. Since R is a script-based program, R syntax is not very flexible; as 
-# such, you must pay VERY careful attention to detail when writing scripts.
-# One focus of this document (and the workshop in general) is to ensure that you 
-# use “best management practices” (BMP’s) in writing scripts. The reasons for some 
-# of the suggestions may not be obvious at first but, as you become more familiar 
-# with R (and, inevitably, write more complicated scripts) you’re going to begin to 
-# understand why this is necessary. 
+# Title: Introduction to R
+# Author: Brian Evans
+# Date created: 20 Aug 2014
+# Overview: This document will lead you through the early steps of data
+# exploration and, in the process, you will explore how R interprets a 
+# dataset. It is important that you follow every step, formatting and
+# running your data exactly as the script describes. Since R is a
+# script-based program, R syntax is not very flexible; as such, you must
+# pay VERY careful attention to detail when writing scripts. One focus of 
+# this document (and the workshop in general) is to ensure that you use
+# “best management practices” (BMP’s) in writing scripts. The reasons for 
+# some of the suggestions may not be obvious at first but, as you become 
+# more familiar with R (and, inevitably, write more complicated scripts) 
+# you’re going to begin to understand why this is necessary. 
 
 #  ---- R BMP’s ---- 
 # 1. ALWAYS enter your script into the R Editor window rather than the console
@@ -35,9 +39,8 @@
 
 # 5. Beware of UPPERCASE and lots of punctuation: Whenever possible, use lowercase,
 #   easy-to-remember (and type) names and column headings.
-#   Why: If you use uppercase for some things just make sure you know how you 
-#   named things. R is case sensitive, you need to remember how you entered
-#   code.
+#   Why: R is case sensitive -- as codes get more complex, it can be 
+#   easy to forget the names that you've assigned.
 
 #======================================================================*
 # ---- Data management, the early steps ----
@@ -141,8 +144,10 @@ str(encounters)
 
 # The bread-and-butter data formats in R are matrices and data frames. A
 # matrix is a set of values arranged in rows and columns. A data frame
-# is a matrix that contains column names. To illustrate explore the utility
-# of this, we will create a matrix, then convert it to a dataframe. 
+# is structurally similar to a matrix but may contain more than one type
+# of data (for example, integers and factors) and contains column names. 
+# To explore the utility of this, we will create a matrix, then convert 
+# it to a dataframe. 
 
 # 1. First, we will create vectors of values using the "c" function (note:
 # "c" stands for concatenate). The ":" below means that we want a string
@@ -179,10 +184,10 @@ v2 = rep(c('A','B'), each = 3)
 m = matrix(c(v1,v2), ncol = 2)
 
 # Type m (or wrap the function above in parentheses) to view your
-# output. Note that you have created a 6 row x 2 column matrix 
-# of data. Also note how the columns and rows are notated. The
-# format is [row, column] and understanding this format is very
-# important when querying and subsetting data.
+# output. You have created a 6 row x 2 column matrix of data. Note 
+# how the columns and rows are notated. The format is [row, column]
+# and understanding this format is very important when querying and
+# subsetting data.
 
 # 4. Explore the values of the matrix:
 
@@ -204,7 +209,10 @@ m[3,2]
 
 df1 = data.frame(v1,v2)
 
-# Change the column names as below:
+# Take a moment to explore your data frame (df1) and matrix (m).
+# How are they different? Why might this be the case?
+
+# Change the column names of your data frame:
 
 names(df1) = c('integer','factor')
 
